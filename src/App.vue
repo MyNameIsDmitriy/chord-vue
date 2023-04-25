@@ -11,6 +11,23 @@ export default {
 <style lang="scss">
 @import url(@/assets/reset-styles.scss);
 
+html {
+  min-height: 100%;
+
+  background: linear-gradient(
+    90deg,
+    rgba(1, 114, 175, 1) 20%,
+    rgba(1, 230, 160, 1) 80%
+  );
+
+  // TODO deside between colors
+  // background: linear-gradient(
+  //   90deg,
+  //   rgba(1, 114, 175, 1) 26%,
+  //   rgba(116, 254, 189, 1) 70%
+  // );
+}
+
 #app {
   font-family: "Oswald", sans-serif;
   // TODO
@@ -20,18 +37,5 @@ export default {
   text-align: center;
 
   height: 100vh;
-  background: rgb(1, 114, 175);
-  background: linear-gradient(
-    70deg,
-    rgba(1, 114, 175, 1) 20%,
-    rgba(1, 254, 189, 1) 80%
-  );
-
-  // TODO deside between colors
-  // background: linear-gradient(
-  //   90deg,
-  //   rgba(1, 114, 175, 1) 26%,
-  //   rgba(116, 254, 189, 1) 70%
-  // );
 }
 </style>

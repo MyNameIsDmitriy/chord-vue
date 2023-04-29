@@ -38,4 +38,24 @@ html {
 
   height: 100vh;
 }
+
+// ------Scrollbar style------
+/* Works on Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: white black;
+}
+/* Works on Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+  width: 12px;
+}
+*::-webkit-scrollbar-track {
+  background: black;
+}
+*::-webkit-scrollbar-thumb {
+  background-color: white;
+  border-radius: 20px;
+  border: 3px solid black;
+}
+// ------Scrollbar style------ ends
 </style>

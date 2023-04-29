@@ -1,31 +1,33 @@
 <template>
   <div class="controls">
-    <label for="start-note" @click="getNotes()">Start note: </label>
-    <select name="start-note" id="start-note">
+    <label for="start-note">Start note: </label>
+    <select v-model="startNoteValue" name="start-note" id="start-note">
       <option v-for="note in startNotes" :key="note">{{ note }}</option>
     </select>
     <label for="octave">Octave: </label>
-    <select name="octave" id="octave">
+    <select v-model="startOctaveValue" name="octave" id="octave">
       <option v-for="octave in octaves" :key="octave">{{ octave }}</option>
     </select>
   </div>
 
   <div class="chord-notes">
-    <p class="notes">abra - kadabra</p>
-    <p class="inervals">biba - boba - biba</p>
+    <p class="notes">{{ notesValue }}</p>
+    <p class="inervals">{{ intervalsValue }}</p>
   </div>
 
   <div class="buttons">
-    <!-- TODO use v-for -->
-    <button v-for="chord in chordNames" :key="chord">
+    <button
+      @click="getButtonName($event)"
+      v-for="chord in chordNames"
+      :key="chord"
+    >
       {{ chord.aliases[0] }}
     </button>
   </div>
 </template>
 
 <script>
-// import { Note, Interval, Chord } from "tonal";
-import { ChordType } from "tonal";
+import { ChordType, Chord } from "tonal";
 
 export default {
   name: "LibraryPage",
@@ -51,17 +53,32 @@ export default {
         "Bb",
         "B",
       ],
-      octaves: [1, 2, 3, 4, 5, 6, 7],
+      octaves: ["1", "2", "3", "4", "5", "6", "7"],
       chordNames: ChordType.all(),
-
-      // TODO delete
-      // someNote: Note.name("A4"),
-      // someInterval: Interval.get("5P"),
-      // someChord: Chord.getChord("maj7"),
+      startNoteValue: "C",
+      startOctaveValue: "1",
+      intervalsValue: "",
+      notesValue: "",
+      finalStartValues: "",
     };
   },
 
-  methods: {},
+  methods: {
+    // TODO change name
+    getButtonName(event) {
+      // console.log(Chord.get(event.target.innerText));
+      this.intervalsInChord = Chord.get(event.target.innerText).intervals;
+      this.intervalsValue = this.intervalsInChord.join(" - ");
+
+      this.finalStartValues = this.startNoteValue + this.startOctaveValue;
+
+      this.notesValue = this.intervalsInChord
+        .map((int) => {
+          return Chord.transpose(this.finalStartValues, int);
+        })
+        .join(" - ");
+    },
+  },
 };
 </script>
 
@@ -91,7 +108,7 @@ export default {
 
   button {
     flex-grow: 1;
-    min-width: 200px;
+    min-width: 180px;
     height: 50px;
 
     border-radius: 8px;

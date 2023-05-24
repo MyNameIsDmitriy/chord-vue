@@ -10,9 +10,29 @@
     </select>
   </div>
 
-  <div class="chord-notes">
-    <p class="notes">{{ chordValue }}</p>
-    <p class="inervals">{{ intervalsValue }}</p>
+  <div class="labels">
+    <div v-if="!isChordChosen" class="provoke-label">
+      <p class="gradient-text">Choose a chord</p>
+    </div>
+
+    <div v-if="isChordChosen" class="chord-info">
+      <div class="chord-names">
+        <div class="chord-names-explanation gradient-text">
+          Possible names of a chord
+        </div>
+        <p class="names">{{ possibleChordNames }}</p>
+      </div>
+      <div class="chord-notes">
+        <div class="chord-notes-explanation gradient-text">Chord notes</div>
+        <p class="notes">{{ chordValue }}</p>
+      </div>
+      <div class="chord-intervals">
+        <div class="chord-intervals-explanation gradient-text">
+          Chord Intervals
+        </div>
+        <p class="intervals">{{ intervalsValue }}</p>
+      </div>
+    </div>
   </div>
 
   <div class="buttons">
@@ -211,12 +231,13 @@ const notes = [
 ];
 
 let newGen = [];
+let fadeDelay = 0;
 
 notes.forEach((note) => {
   newGen.push(
     (note = new Howl({
       src: [note],
-      volume: 0.2,
+      volume: 0.1,
     }))
   );
 });
@@ -265,7 +286,25 @@ export default {
         "B",
       ],
       flatNotesAlternates: [],
+      isChordChosen: false,
+      possibleChordNames: [],
     };
+  },
+
+  mounted() {
+    // creating array of flatNotes
+    for (let i = 1; i < 8; i++) {
+      this.flatNotesSample.forEach((flatNote) => {
+        this.flatNotes.push(flatNote + i);
+      });
+    }
+
+    //crating array of Alternates of flat notes
+    for (let i = 1; i < 8; i++) {
+      this.flatNotesAlternatesSample.forEach((alter) => {
+        this.flatNotesAlternates.push(alter + i);
+      });
+    }
   },
 
   methods: {
@@ -282,7 +321,21 @@ export default {
         })
         .join(" - ");
 
+      this.possibleChordNames = Chord.detect(this.chordValue.split(" - ")).join(
+        " - "
+      );
+
+      this.changeLabelVisibility();
       this.playChord(event);
+    },
+
+    changeLabelVisibility() {
+      clearTimeout(fadeDelay);
+      this.isChordChosen = true;
+
+      fadeDelay = setTimeout(() => {
+        this.isChordChosen = false;
+      }, 30000);
     },
 
     playChord(event) {
@@ -292,6 +345,7 @@ export default {
 
       console.log("simplified: " + this.simplifiedChord);
 
+      // TODO change to forEach
       for (let k = 0; k < this.simplifiedChord.length; k++) {
         for (let idx = 0; idx < newGen.length; idx++) {
           if (
@@ -304,23 +358,10 @@ export default {
         }
       }
       console.log("name of chord:  " + event.target.innerText);
+      console.log("detect: " + Chord.detect(this.chordValue.split(" - ")));
     },
 
     transformateNotes() {
-      // creating array of flatNotes
-      for (let i = 1; i < 8; i++) {
-        this.flatNotesSample.forEach((flatNote) => {
-          this.flatNotes.push(flatNote + i);
-        });
-      }
-
-      //crating array of Alternates of flat notes
-      for (let i = 1; i < 8; i++) {
-        this.flatNotesAlternatesSample.forEach((alter) => {
-          this.flatNotesAlternates.push(alter + i);
-        });
-      }
-
       this.simplifiedChord = this.chordValue.split(" - ").map((note) => {
         note = Note.simplify(note);
         note = note.replace("#", "sharp");
@@ -340,17 +381,98 @@ export default {
   justify-content: center;
   font-size: 18px;
 
+  margin-bottom: 5px;
+
   select {
     margin: 0 8px;
   }
 }
 
-.chord-notes {
+.provoke-label {
+  font-size: 24px;
+}
+
+.gradient-text {
+  background: linear-gradient(-45deg, #6355a4, #6355a4, white, white);
+  background-size: 200%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: animated_text 10s ease-in-out infinite;
+  -moz-animation: animated_text 10s ease-in-out infinite;
+  -webkit-animation: animated_text 10s ease-in-out infinite;
+}
+
+@keyframes animated_text {
+  0% {
+    background-position: 0px 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0px 50%;
+  }
+}
+
+.chord-names-explanation,
+.chord-notes-explanation,
+.chord-intervals-explanation {
+  display: none;
+  position: fixed;
+  height: auto;
+
+  font-size: 18px;
+  z-index: 1;
+}
+
+.chord-names-explanation {
+  top: 20px;
+  width: 400px;
+}
+
+.chord-notes-explanation {
+  top: calc(20px + 43px);
+  width: 200px;
+}
+
+.chord-intervals-explanation {
+  top: calc(20px + 43px + 43px);
+  width: 250px;
+}
+
+.chord-names:hover .chord-names-explanation,
+.chord-notes:hover .chord-notes-explanation,
+.chord-intervals:hover .chord-intervals-explanation {
+  display: inline;
+}
+
+.chord-info {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
+  align-items: center;
   flex-direction: column;
+  height: 125px;
 
   font-size: 24px;
+
+  .chord-names,
+  .chord-notes,
+  .chord-intervals {
+    position: relative;
+    min-width: 50px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .notes,
+    .names,
+    .intervals {
+      justify-content: center;
+      align-items: center;
+    }
+  }
 }
 
 .buttons {

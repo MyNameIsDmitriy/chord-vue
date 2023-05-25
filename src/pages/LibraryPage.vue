@@ -434,25 +434,23 @@ export default {
 .chord-notes-explanation,
 .chord-intervals-explanation {
   display: none;
-  position: fixed;
+  position: absolute;
   height: auto;
+  top: -16px;
 
   font-size: 18px;
   z-index: 1;
 }
 
 .chord-names-explanation {
-  top: 20px;
   width: 400px;
 }
 
 .chord-notes-explanation {
-  top: calc(20px + 43px);
   width: 200px;
 }
 
 .chord-intervals-explanation {
-  top: calc(20px + 43px + 43px);
   width: 250px;
 }
 

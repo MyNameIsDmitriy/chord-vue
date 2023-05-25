@@ -136,13 +136,6 @@ import {
   Gsharp7,
 } from "@/assets/index.js";
 
-// const CircularJSON = require("circular-json");
-
-// const sound = new Howl({
-//   src: [A1],
-//   volume: 0.2,
-// });
-
 const notes = [
   A1,
   Asharp1,
@@ -230,17 +223,28 @@ const notes = [
   Gsharp7,
 ];
 
-let newGen = [];
-let fadeDelay = 0;
+// const notesSample = [
+//   "A",
+//   "Asharp",
+//   "B",
+//   "C",
+//   "Csharp",
+//   "D",
+//   "Dsharp",
+//   "E",
+//   "F",
+//   "Fsharp",
+//   "G",
+//   "Gsharp",
+// ];
 
-notes.forEach((note) => {
-  newGen.push(
-    (note = new Howl({
-      src: [note],
-      volume: 0.1,
-    }))
-  );
-});
+// let notes3 = [];
+
+// for (let i = 1; i < 8; i++) {
+//   notes2.forEach((note) => {
+//     notes3.push(note + i);
+//   });
+// }
 
 export default {
   name: "LibraryPage",
@@ -272,6 +276,7 @@ export default {
       startOctaveValue: "1",
       intervalsValue: "",
       chordValue: "",
+      newGen: [],
       simplifiedChord: [],
       finalStartValues: "",
       flatNotesSample: ["Db", "Eb", "Fb", "Gb", "Ab", "Bb", "Cb"],
@@ -287,11 +292,21 @@ export default {
       ],
       flatNotesAlternates: [],
       isChordChosen: false,
+      fadeDelay: 0,
       possibleChordNames: [],
     };
   },
 
   mounted() {
+    notes.forEach((note) => {
+      this.newGen.push(
+        (note = new Howl({
+          src: [note],
+          volume: 0.1,
+        }))
+      );
+    });
+
     // creating array of flatNotes
     for (let i = 1; i < 8; i++) {
       this.flatNotesSample.forEach((flatNote) => {
@@ -330,10 +345,10 @@ export default {
     },
 
     changeLabelVisibility() {
-      clearTimeout(fadeDelay);
+      clearTimeout(this.fadeDelay);
       this.isChordChosen = true;
 
-      fadeDelay = setTimeout(() => {
+      this.fadeDelay = setTimeout(() => {
         this.isChordChosen = false;
       }, 30000);
     },
@@ -346,6 +361,7 @@ export default {
       console.log("simplified: " + this.simplifiedChord);
 
       // TODO change to forEach
+      let newGen = this.newGen;
       for (let k = 0; k < this.simplifiedChord.length; k++) {
         for (let idx = 0; idx < newGen.length; idx++) {
           if (
@@ -363,8 +379,7 @@ export default {
 
     transformateNotes() {
       this.simplifiedChord = this.chordValue.split(" - ").map((note) => {
-        note = Note.simplify(note);
-        note = note.replace("#", "sharp");
+        note = Note.simplify(note).replace("#", "sharp");
         if (this.flatNotes.includes(note)) {
           note = this.flatNotesAlternates[this.flatNotes.indexOf(note)];
         }

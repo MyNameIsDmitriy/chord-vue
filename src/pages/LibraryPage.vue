@@ -400,6 +400,7 @@ export default {
 
   select {
     margin: 0 8px;
+    cursor: pointer;
   }
 }
 
@@ -439,6 +440,7 @@ export default {
   top: -16px;
 
   font-size: 18px;
+  cursor: help;
   z-index: 1;
 }
 
@@ -484,6 +486,7 @@ export default {
     .intervals {
       justify-content: center;
       align-items: center;
+      cursor: help;
     }
   }
 }

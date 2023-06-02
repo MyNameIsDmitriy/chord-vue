@@ -6,6 +6,7 @@ const routes = [
   { path: "/", component: Welcome },
   // lazy load
   { path: "/library", component: () => import("@/pages/LibraryPage.vue") },
+  { path: "/gameMain", component: () => import("@/pages/GamePageMain.vue") },
   { path: "/game", component: () => import("@/pages/GamePage.vue") },
 ];
 
